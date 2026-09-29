@@ -1,0 +1,9 @@
+# Never commit real HR data
+*.xlsx
+*.xls
+*.xlsm
+data/real/
+imports/real/
+.env
+.env.*
+!.env.example
