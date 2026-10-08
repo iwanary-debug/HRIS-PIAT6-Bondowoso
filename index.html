@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>HRIS PIAT6 Bondowoso</title>
+    <meta
+      name="description"
+      content="Human Resources Information System Pesantren Islam Al Irsyad Tengaran 6 Bondowoso"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- build-marker: boot-reporter-v3 -->
+    <script>
+      // Boot guard. The app sets data-app-booted on <html> once it has mounted.
+      // If that never happens we surface the real reason instead of a blank page
+      // and post it to the backend so the failure can be read from the dashboard.
+      (function () {
+        var BACKEND = "https://hallowed-warthog-725.convex.cloud";
+        var detail = "";
+        var reported = false;
+
+        window.addEventListener(
+          "error",
+          function (e) {
+            var msg = (e && e.message) || "Error tidak diketahui";
+            var where = e && e.filename ? " (" + e.filename + ":" + e.lineno + ":" + e.colno + ")" : "";
+            detail = msg + where;
+          },
+          true,
+        );
+        window.addEventListener("unhandledrejection", function (e) {
+          var r = e && e.reason;
+          detail = "Unhandled promise rejection: " + ((r && r.message) || r);
+        });
+
+        function booted() {
+          var root = document.getElementById("root");
+          if (!root) return true;
+          if (root.childElementCount > 0) return true;
+          return !!document.documentElement.getAttribute("data-app-booted");
+        }
+
+        function send(message) {
+          if (reported) return;
+          reported = true;
+          try {
+            var body = JSON.stringify({
+              path: "bootReports:report",
+              args: {
+                message: message,
+                userAgent: String(navigator.userAgent || ""),
+                url: String(location.href || ""),
+              },
+            });
+            if (navigator.sendBeacon) {
+              navigator.sendBeacon(BACKEND + "/api/mutation", new Blob([body], { type: "application/json" }));
+            } else {
+              fetch(BACKEND + "/api/mutation", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: body,
+                keepalive: true,
+              });
+            }
+          } catch (err) {
+            /* diagnostics only */
+          }
+        }
+
+        function escapeHtml(text) {
+          return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        }
+
+        // One retry of the module: covers a single dropped request on slow networks.
+        setTimeout(function () {
+          if (booted()) return;
+          var tag = document.querySelector("script[type=module][src]");
+          if (tag) {
+            var retry = document.createElement("script");
+            retry.type = "module";
+            retry.src = tag.src + (tag.src.indexOf("?") > -1 ? "&" : "?") + "retry=1";
+            document.head.appendChild(retry);
+            return;
+          }
+          showNotice();
+        }, 2500);
+
+        function showNotice() {
+          if (booted()) return;
+          var root = document.getElementById("root");
+          if (!root) return;
+          var text = detail || "Bundel tidak sempat dijalankan dan tidak ada error yang tertangkap.";
+          send(text);
+          root.innerHTML =
+            '<div style="font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f6f4ee;color:#1f2937;text-align:center;padding:24px">' +
+            '<div style="max-width:560px">' +
+            '<h1 style="font-size:20px;font-weight:700;margin:0 0 8px">HRIS PIAT6 Bondowoso</h1>' +
+            '<p style="margin:0 0 12px;font-size:14px;line-height:1.6">Aplikasi gagal tampil di perangkat ini. Kesalahannya sudah terkirim ke server.</p>' +
+            '<pre style="text-align:left;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto">' +
+            escapeHtml(text) +
+            "</pre>" +
+            '<p style="margin:12px 0 0;font-size:12px;opacity:0.7">Muat ulang halaman, atau hubungi admin sistem.</p>' +
+            "</div></div>";
+        }
+
+        setTimeout(showNotice, 6000);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

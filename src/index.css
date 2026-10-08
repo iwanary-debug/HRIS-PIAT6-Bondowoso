@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 33% 98%;
+    --foreground: 217 47% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 217 47% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 47% 13%;
+
+    --primary: 217 65% 26%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 214 32% 95%;
+    --secondary-foreground: 217 47% 18%;
+
+    --muted: 214 30% 96%;
+    --muted-foreground: 215 20% 42%;
+
+    --accent: 213 60% 95%;
+    --accent-foreground: 217 65% 24%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 25% 89%;
+    --input: 214 25% 89%;
+    --ring: 217 65% 32%;
+
+    --radius: 0.65rem;
+  }
+
+  .dark {
+    --background: 217 45% 8%;
+    --foreground: 210 30% 96%;
+    --card: 217 42% 11%;
+    --card-foreground: 210 30% 96%;
+    --popover: 217 42% 11%;
+    --popover-foreground: 210 30% 96%;
+    --primary: 213 70% 62%;
+    --primary-foreground: 217 50% 10%;
+    --secondary: 217 32% 18%;
+    --secondary-foreground: 210 30% 96%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 214 20% 68%;
+    --accent: 217 34% 22%;
+    --accent-foreground: 210 30% 96%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 28% 22%;
+    --input: 217 28% 22%;
+    --ring: 213 70% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  .surface-grid {
+    background-image: linear-gradient(to right, rgba(22, 44, 91, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(22, 44, 91, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+}
